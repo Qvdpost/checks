@@ -234,22 +234,32 @@ class Adventure(Checks):
     def handle_invalid_items(self):
         """Take and drop nonexistent items."""
         # Take a non-existent item.
-        check = self.spawn_tiny().stdin("TAKE kes")
-        check.stdout(re.escape(no_item), str_output=no_item)
+        try:
+            check = self.spawn_tiny().stdin("TAKE kes")
+            check.stdout(re.escape(no_item), str_output=no_item)
+        except Error as error:
+            raise Error(rationale=f"Expected message: '{no_item}'.\n"
+                                  f"    Not: {error}")
 
         # Take an item twice.
         check = self.spawn_tiny()
         moves = ["IN", "TAKE keys", "TAKE keys"]
-
-        for move in moves:
-            check.stdout("> ")
-            check.stdin(move, prompt=False)
-        check.stdout(re.escape(no_item), str_output=no_item)
+        try:
+            for move in moves:
+                check.stdout("> ")
+                check.stdin(move, prompt=False)
+            check.stdout(re.escape(no_item), str_output=no_item)
+        except Error as error:
+            raise Error(rationale=f"Expected message: '{no_item}'.\n"
+                                  f"    Not: {error}")
 
         # Drop non-existent item.
-        check = self.spawn_tiny().stdin("DROP something")
-        check.stdout(re.escape(no_item), str_output=no_item)
-
+        try:
+            check = self.spawn_tiny().stdin("DROP something")
+            check.stdout(re.escape(no_item), str_output=no_item)
+        except Error as error:
+            raise Error(rationale=f"Expected message: '{no_item}'.\n"
+                                  f"    Not: {error}")
 
     @check("handle_items")
     def inventory(self):
@@ -395,6 +405,8 @@ class Adventure(Checks):
         for move in moves:
             check.stdout("> ")
             check.stdin(move, prompt=False)
+
+        check.stdout(re.escape("EGGS"), str_output="EGGS")
 
         text = "You have collected all the treasures and are admitted to "\
                      "the Adventurer's Hall of Fame.  Congratulations!"
