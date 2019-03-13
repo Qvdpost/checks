@@ -406,7 +406,7 @@ class Adventure(Checks):
             check.stdout("> ")
             check.stdin(move, prompt=False)
 
-        check.stdout(re.escape("EGGS"), str_output="EGGS Hint: remeber that you can have multiple forced rooms in succession.")
+        check.stdout(re.escape("EGGS"), str_output="EGGS Hint: \nremember that you can have multiple forced rooms in succession.")
 
         text = "You have collected all the treasures and are admitted to "\
                      "the Adventurer's Hall of Fame.  Congratulations!"
